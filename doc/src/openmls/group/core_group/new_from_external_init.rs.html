@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/group/core_group/new_from_external_init.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>new_from_external_init.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../openmls/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../openmls/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../openmls/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+</pre><pre class="rust"><code><span class="kw">use crate</span>::{
+    ciphersuite::signable::Verifiable,
+    group::errors::ExternalCommitError,
+    messages::{
+        proposals::{ExternalInitProposal, Proposal},
+        public_group_state::{PublicGroupState, VerifiablePublicGroupState},
+    },
+    treesync::{errors::TreeSyncFromNodesError, node::Node},
+};
+
+<span class="kw">use super</span>::{
+    create_commit_params::{CommitType, CreateCommitParams},
+    CoreGroup,
+};
+<span class="kw">use </span><span class="kw">crate</span>::group::core_group::<span class="kw-2">*</span>;
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>ExternalCommitResult = (CoreGroup, CreateCommitResult);
+
+<span class="kw">impl </span>CoreGroup {
+    <span class="doccomment">/// Join a group without the help of an internal member. This function
+    /// requires a `PublicGroupState`, as well as the corresponding public tree
+    /// `nodes`. After the group state is initialized, this function creates an
+    /// `ExternalInit` proposal and commits it along with the given proposals by
+    /// reference and by value.
+    ///
+    /// Returns the new `CoreGroup` object, as well as the `MlsPlaintext`
+    /// containing the commit.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>join_by_external_commit(
+        backend: <span class="kw-2">&amp;</span><span class="kw">impl </span>OpenMlsCryptoProvider,
+        params: CreateCommitParams,
+        tree_option: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[<span class="prelude-ty">Option</span>&lt;Node&gt;]&gt;,
+        verifiable_public_group_state: VerifiablePublicGroupState,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalCommitResult, ExternalCommitError&gt; {
+        <span class="kw">let </span>ciphersuite = verifiable_public_group_state.ciphersuite();
+        <span class="kw">if </span>verifiable_public_group_state.version() != ProtocolVersion::Mls10 {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ExternalCommitError::UnsupportedMlsVersion);
+        }
+
+        <span class="comment">// Build the ratchet tree
+
+        // Set nodes either from the extension or from the `nodes_option`.
+        // If we got a ratchet tree extension in the welcome, we enable it for
+        // this group. Note that this is not strictly necessary. But there&#39;s
+        // currently no other mechanism to enable the extension.
+        </span><span class="kw">let </span>extension_tree_option = try_nodes_from_extensions(
+            verifiable_public_group_state.other_extensions(),
+            backend.crypto(),
+        )
+        .map_err(|e| <span class="kw">match </span>e {
+            ExtensionError::DuplicateRatchetTreeExtension =&gt; {
+                ExternalCommitError::DuplicateRatchetTreeExtension
+            }
+            <span class="kw">_ </span>=&gt; LibraryError::custom(<span class="string">&quot;Unexpected extension error&quot;</span>).into(),
+        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>(nodes, enable_ratchet_tree_extension) = <span class="kw">match </span>extension_tree_option {
+            <span class="prelude-val">Some</span>(nodes) =&gt; (nodes, <span class="bool-val">true</span>),
+            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>tree_option {
+                <span class="prelude-val">Some</span>(n) =&gt; (n.into(), <span class="bool-val">false</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(ExternalCommitError::MissingRatchetTree),
+            },
+        };
+
+        <span class="comment">// Create a RatchetTree from the given nodes. We have to do this before
+        // verifying the PGS, since we need to find the Credential to verify the
+        // signature against.
+        </span><span class="kw">let </span>treesync = TreeSync::from_nodes_without_leaf(backend, ciphersuite, nodes).map_err(
+            |e| <span class="kw">match </span>e {
+                TreeSyncFromNodesError::LibraryError(e) =&gt; e.into(),
+                TreeSyncFromNodesError::PublicTreeError(e) =&gt; {
+                    ExternalCommitError::PublicTreeError(e)
+                }
+            },
+        )<span class="question-mark">?</span>;
+
+        <span class="kw">if </span>treesync.tree_hash() != verifiable_public_group_state.tree_hash() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ExternalCommitError::TreeHashMismatch);
+        }
+
+        <span class="comment">// FIXME #680: Validation of external commits
+        </span><span class="kw">let </span>pgs_signer_leaf = treesync.leaf_from_id(verifiable_public_group_state.signer());
+        <span class="kw">let </span>pgs_signer_credential = pgs_signer_leaf
+            .ok_or(ExternalCommitError::UnknownSender)<span class="question-mark">?
+            </span>.key_package()
+            .credential();
+        <span class="kw">let </span>pgs: PublicGroupState = verifiable_public_group_state
+            .verify(backend, pgs_signer_credential)
+            .map_err(|<span class="kw">_</span>| ExternalCommitError::InvalidPublicGroupStateSignature)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>(init_secret, kem_output) = InitSecret::from_public_group_state(backend, <span class="kw-2">&amp;</span>pgs)
+            .map_err(|<span class="kw">_</span>| ExternalCommitError::UnsupportedCiphersuite)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>group_context = GroupContext::new(
+            ciphersuite,
+            pgs.group_id,
+            pgs.epoch,
+            pgs.tree_hash.as_slice().to_vec(),
+            pgs.confirmed_transcript_hash.into(),
+            pgs.group_context_extensions.as_slice(),
+        );
+
+        <span class="comment">// The `EpochSecrets` we create here are essentially zero, with the
+        // exception of the `InitSecret`, which is all we need here for the
+        // external commit.
+        </span><span class="kw">let </span>epoch_secrets = EpochSecrets::with_init_secret(backend, init_secret)
+            .map_err(LibraryError::unexpected_crypto_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>(group_epoch_secrets, message_secrets) = epoch_secrets.split_secrets(
+            group_context
+                .tls_serialize_detached()
+                .map_err(LibraryError::missing_bound_check)<span class="question-mark">?</span>,
+            treesync
+                .leaf_count()
+                .map_err(|<span class="kw">_</span>| LibraryError::custom(<span class="string">&quot;The tree was too big&quot;</span>))<span class="question-mark">?</span>,
+            <span class="comment">// We use a fake own index of 0 here, as we&#39;re not going to use the
+            // tree for encryption until after the first commit. This issue is
+            // tracked in #767.
+            </span><span class="number">0u32</span>,
+        );
+        <span class="kw">let </span>message_secrets_store = MessageSecretsStore::new_with_secret(<span class="number">0</span>, message_secrets);
+
+        <span class="comment">// Prepare interim transcript hash
+        </span><span class="kw">let </span>group = CoreGroup {
+            ciphersuite,
+            group_context,
+            tree: treesync,
+            interim_transcript_hash: pgs.interim_transcript_hash.into(),
+            use_ratchet_tree_extension: enable_ratchet_tree_extension,
+            mls_version: pgs.version,
+            group_epoch_secrets,
+            message_secrets_store,
+        };
+
+        <span class="kw">let </span>external_init_proposal = Proposal::ExternalInit(ExternalInitProposal::from(kem_output));
+
+        <span class="kw">let </span><span class="kw-2">mut </span>inline_proposals = <span class="macro">vec!</span>[external_init_proposal];
+
+        <span class="comment">// If there is a group member in the group with the same identity as us,
+        // commit a remove proposal.
+        </span><span class="kw">for </span>(<span class="kw">_</span>, key_package) <span class="kw">in </span>group.treesync().full_leaves()<span class="question-mark">? </span>{
+            <span class="kw">if </span>key_package.credential().identity()
+                == params.credential_bundle().credential().identity()
+            {
+                <span class="kw">let </span>remove_proposal = Proposal::Remove(RemoveProposal {
+                    removed: key_package.hash_ref(backend.crypto())<span class="question-mark">?</span>,
+                });
+                inline_proposals.push(remove_proposal);
+                <span class="kw">break</span>;
+            };
+        }
+
+        <span class="kw">let </span>params = CreateCommitParams::builder()
+            .framing_parameters(<span class="kw-2">*</span>params.framing_parameters())
+            .credential_bundle(params.credential_bundle())
+            .proposal_store(params.proposal_store())
+            .inline_proposals(inline_proposals)
+            .commit_type(CommitType::External)
+            .build();
+
+        <span class="comment">// Immediately create the commit to add ourselves to the group.
+        </span><span class="kw">let </span>create_commit_result = group
+            .create_commit(params, backend)
+            .map_err(|<span class="kw">_</span>| ExternalCommitError::CommitError)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>((group, create_commit_result))
+    }
+}
+</code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="openmls" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
