@@ -428,6 +428,9 @@ impl ProposalQueue {
                     // TODO: Validate proposal?
                     proposal_pool.insert(queued_proposal.proposal_reference(), queued_proposal);
                 }
+                Proposal::OrdAppMsg(_) => {
+                    proposal_pool.insert(queued_proposal.proposal_reference(), queued_proposal);
+                }
             }
         }
         // Check for presence of Removes and delete Updates

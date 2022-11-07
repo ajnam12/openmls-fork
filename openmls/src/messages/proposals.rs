@@ -51,6 +51,7 @@ pub enum ProposalType {
     ExternalInit = 6,
     AppAck = 7,
     GroupContextExtensions = 8,
+    OrdAppMsg = 9,
 }
 
 impl ProposalType {
@@ -66,6 +67,7 @@ impl ProposalType {
             | ProposalType::ExternalInit => true,
             ProposalType::AppAck => false,
             ProposalType::GroupContextExtensions => true,
+            ProposalType::OrdAppMsg => true,
         }
     }
 }
@@ -120,6 +122,7 @@ pub enum Proposal {
     // TODO(#916): `AppAck` is not in draft-ietf-mls-protocol-16.
     AppAck(AppAckProposal),
     GroupContextExtensions(GroupContextExtensionProposal),
+    OrdAppMsg(OrdAppMsgProposal),
 }
 
 impl Proposal {
@@ -133,6 +136,7 @@ impl Proposal {
             Proposal::ExternalInit(ref _r) => ProposalType::ExternalInit,
             Proposal::AppAck(ref _r) => ProposalType::AppAck,
             Proposal::GroupContextExtensions(ref _r) => ProposalType::GroupContextExtensions,
+            Proposal::OrdAppMsg(ref _o) => ProposalType::OrdAppMsg,
         }
     }
     pub(crate) fn is_type(&self, proposal_type: ProposalType) -> bool {
@@ -266,6 +270,16 @@ impl From<Vec<u8>> for ExternalInitProposal {
 )]
 pub struct AppAckProposal {
     received_ranges: TlsVecU32<MessageRange>,
+}
+
+/// OrdAppMsg Proposal.
+///
+/// This is not yet supported.
+#[derive(
+    Debug, PartialEq, Clone, Serialize, Deserialize, TlsDeserialize, TlsSerialize, TlsSize,
+)]
+pub struct OrdAppMsgProposal {
+    bytes: Vec<u8>,
 }
 
 /// ## Group Context Extensions Proposal

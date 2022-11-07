@@ -51,6 +51,7 @@ impl tls_codec::Size for Proposal {
                 Proposal::GroupContextExtensions(group_context_extensions) => {
                     group_context_extensions.tls_serialized_len()
                 }
+                Proposal::OrdAppMsg(ord_app_msg) => ord_app_msg.tls_serialized_len(),
             }
     }
 }
@@ -92,6 +93,10 @@ impl tls_codec::Serialize for Proposal {
                     .tls_serialize(writer)
                     .map(|l| l + written)
             }
+            Proposal::OrdAppMsg(ord_app_msg) => {
+                let written = ProposalType::OrdAppMsg.tls_serialize(writer)?;
+                ord_app_msg.tls_serialize(writer).map(|l| l + written)
+            }
         }
     }
 }
@@ -124,6 +129,9 @@ impl tls_codec::Deserialize for Proposal {
             ProposalType::GroupContextExtensions => Ok(Proposal::GroupContextExtensions(
                 GroupContextExtensionProposal::tls_deserialize(bytes)?,
             )),
+            ProposalType::OrdAppMsg => Ok(Proposal::OrdAppMsg(OrdAppMsgProposal::tls_deserialize(
+                bytes,
+            )?)),
         }
     }
 }
