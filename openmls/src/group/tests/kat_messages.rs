@@ -47,6 +47,7 @@ pub struct MessagesTestVector {
     re_init_proposal: String,        /* serialized ReInit */
     external_init_proposal: String,  /* serialized ExternalInit */
     app_ack_proposal: String,        /* serialized AppAck */
+    ord_app_msg_proposal: String,    /* serialized OrdAppMsg */
 
     commit: String, /* serialized Commit */
 
@@ -192,6 +193,8 @@ pub fn generate_test_vector(ciphersuite: Ciphersuite) -> MessagesTestVector {
     let external_init_proposal = tls_codec::TlsByteVecU16::new(Vec::new());
     // We don't support app ack proposals yet.
     let app_ack_proposal = tls_codec::TlsByteVecU32::new(Vec::new());
+
+    let ord_app_msg_proposal = tls_codec::TlsByteVecU32::new(Vec::new());
 
     let framing_parameters = FramingParameters::new(b"aad", WireFormat::MlsCiphertext);
 
@@ -359,6 +362,12 @@ pub fn generate_test_vector(ciphersuite: Ciphersuite) -> MessagesTestVector {
                 .tls_serialize_detached()
                 .expect("An unexpected error occurred."),
         ), /* serialized AppAck */
+
+        ord_app_msg_proposal: bytes_to_hex(
+            &ord_app_msg_proposal
+                .tls_serialize_detached()
+                .expect("An unexpected error occurred."),
+        ), /* serialized ord_app_msg */
 
         commit: bytes_to_hex(
             &commit
