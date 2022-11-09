@@ -84,6 +84,7 @@ impl TryFrom<u16> for ProposalType {
             6 => Ok(ProposalType::ExternalInit),
             7 => Ok(ProposalType::AppAck),
             8 => Ok(ProposalType::GroupContextExtensions),
+            9 => Ok(ProposalType::OrdAppMsg),
             _ => Err("Unknown proposal type."),
         }
     }
