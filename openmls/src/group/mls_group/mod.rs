@@ -24,6 +24,7 @@ use std::io::{Error, Read, Write};
 mod application;
 mod creation;
 mod exporting;
+mod ord_app_msg;
 mod resumption;
 mod updates;
 

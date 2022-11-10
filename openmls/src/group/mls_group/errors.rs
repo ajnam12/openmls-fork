@@ -133,6 +133,26 @@ pub enum AddMembersError {
     GroupStateError(#[from] MlsGroupStateError),
 }
 
+/// Ordered app message error
+#[derive(Error, Debug, PartialEq, Clone)]
+pub enum OrdAppMsgError {
+    /// See [`LibraryError`] for more details.
+    #[error(transparent)]
+    LibraryError(#[from] LibraryError),
+    /// The own CredentialBundle could not be found in the key store.
+    #[error("The own CredentialBundle could not be found in the key store.")]
+    NoMatchingCredentialBundle,
+    /// See [`EmptyInputError`] for more details.
+    #[error(transparent)]
+    EmptyInput(#[from] EmptyInputError),
+    /// See [`CreateCommitError`] for more details.
+    #[error(transparent)]
+    CreateCommitError(#[from] CreateCommitError),
+    /// See [`MlsGroupStateError`] for more details.
+    #[error(transparent)]
+    GroupStateError(#[from] MlsGroupStateError),
+}
+
 /// Propose add members error
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum ProposeAddMemberError {

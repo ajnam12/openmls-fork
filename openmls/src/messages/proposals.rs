@@ -281,7 +281,7 @@ pub struct AppAckProposal {
     Debug, PartialEq, Clone, Serialize, Deserialize, TlsDeserialize, TlsSerialize, TlsSize,
 )]
 pub struct OrdAppMsgProposal {
-    bytes: Vec<u8>,
+    pub(crate) bytes: Vec<u8>,
 }
 
 /// ## Group Context Extensions Proposal
