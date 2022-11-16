@@ -33,6 +33,7 @@ impl MlsGroup {
 
         // Create Commit over all proposals
         // TODO #751
+        debug!("The inline proposals are {:?}", inline_proposals);
         let params = CreateCommitParams::builder()
             .framing_parameters(self.framing_parameters())
             .credential_bundle(&credential_bundle)
