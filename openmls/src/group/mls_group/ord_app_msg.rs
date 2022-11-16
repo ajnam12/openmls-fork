@@ -3,12 +3,13 @@
 //! This module contains operations related to sending ordered application
 //! messages.
 use core_group::create_commit_params::CreateCommitParams;
+use log::debug;
 use tls_codec::Serialize;
 
 use super::*;
 
 impl MlsGroup {
-    /// Creates a new ordered application proposal + commit
+    /// Creates a new ordered application message proposal + commit
     pub fn send_ord_app_msg(
         &mut self,
         backend: &impl OpenMlsCryptoProvider,
@@ -39,6 +40,7 @@ impl MlsGroup {
             .inline_proposals(inline_proposals)
             .build();
         let create_commit_result = self.group.create_commit(params, backend)?;
+        debug!("The commit result is {:?}", create_commit_result);
 
         // Convert MlsPlaintext messages to MLSMessage and encrypt them if required by
         // the configuration
