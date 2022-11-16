@@ -284,6 +284,13 @@ pub struct OrdAppMsgProposal {
     pub(crate) bytes: Vec<u8>,
 }
 
+impl OrdAppMsgProposal {
+    /// Returns a reference to the bytes contained within the proposal
+    pub fn get_bytes(&self) -> &Vec<u8> {
+        &self.bytes
+    }
+}
+
 /// ## Group Context Extensions Proposal
 ///
 /// A GroupContextExtensions proposal is used to update the list of extensions
