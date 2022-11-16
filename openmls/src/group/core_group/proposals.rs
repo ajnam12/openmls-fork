@@ -7,8 +7,8 @@ use crate::{
     framing::*,
     group::errors::*,
     messages::proposals::{
-        AddProposal, PreSharedKeyProposal, Proposal, ProposalOrRef, ProposalOrRefType,
-        ProposalType, RemoveProposal, UpdateProposal,
+        AddProposal, OrdAppMsgProposal, PreSharedKeyProposal, Proposal, ProposalOrRef,
+        ProposalOrRefType, ProposalType, RemoveProposal, UpdateProposal,
     },
 };
 
@@ -306,6 +306,22 @@ impl ProposalQueue {
         })
     }
 
+    /// Returns an iterator over all PresharedKey proposals in the queue
+    /// in the order of the the Commit message
+    pub(crate) fn ord_app_msg_proposals(&self) -> impl Iterator<Item = QueuedOrdAppMsgProposal> {
+        self.queued_proposals().filter_map(|queued_proposal| {
+            if let Proposal::OrdAppMsg(ord_app_msg_proposal) = queued_proposal.proposal() {
+                let sender = queued_proposal.sender();
+                Some(QueuedOrdAppMsgProposal {
+                    ord_app_msg_proposal,
+                    sender,
+                })
+            } else {
+                None
+            }
+        })
+    }
+
     /// Filters received proposals
     ///
     /// 11.2 Commit
@@ -559,6 +575,25 @@ impl<'a> QueuedPskProposal<'a> {
     /// Returns a reference to the proposal
     pub fn psk_proposal(&self) -> &PreSharedKeyProposal {
         self.psk_proposal
+    }
+
+    /// Returns a reference to the sender
+    pub fn sender(&self) -> &Sender {
+        self.sender
+    }
+}
+
+/// A queued ordered app message proposal
+#[derive(PartialEq, Eq, Debug)]
+pub struct QueuedOrdAppMsgProposal<'a> {
+    ord_app_msg_proposal: &'a OrdAppMsgProposal,
+    sender: &'a Sender,
+}
+
+impl<'a> QueuedOrdAppMsgProposal<'a> {
+    /// Returns a reference to the proposal
+    pub fn ord_app_msg_proposal(&self) -> &OrdAppMsgProposal {
+        self.ord_app_msg_proposal
     }
 
     /// Returns a reference to the sender

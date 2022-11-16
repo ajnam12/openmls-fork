@@ -444,6 +444,13 @@ impl StagedCommit {
         self.staged_proposal_queue.psk_proposals()
     }
 
+    /// Returns the OrdAppMsg proposals that are covered by the commit message
+    /// as an iterater over [QueuedOrdAppMsgProposal]. This is based on the
+    /// implementation of `psk_proposals`.
+    pub fn ord_app_msg_proposals(&self) -> impl Iterator<Item = QueuedOrdAppMsgProposal> {
+        self.staged_proposal_queue.ord_app_msg_proposals()
+    }
+
     /// Returns an optional key package from the Commit's update path.
     /// A key package is returned for full and empty Commits, but not for partial Commits.
     pub fn commit_update_key_package(&self) -> Option<&KeyPackage> {

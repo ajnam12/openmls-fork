@@ -278,7 +278,7 @@ pub struct AppAckProposal {
 /// This is an experimental message type for allowing MLS extensions without
 /// requiring changes to the core MLS protocol.
 #[derive(
-    Debug, PartialEq, Clone, Serialize, Deserialize, TlsDeserialize, TlsSerialize, TlsSize,
+    Debug, PartialEq, Eq, Clone, Serialize, Deserialize, TlsDeserialize, TlsSerialize, TlsSize,
 )]
 pub struct OrdAppMsgProposal {
     pub(crate) bytes: Vec<u8>,
