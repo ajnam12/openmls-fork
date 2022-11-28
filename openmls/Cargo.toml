@@ -28,7 +28,7 @@ itertools = {version = "0.10", optional = true}
 openmls_evercrypt = {version = "0.1.0", path = "../evercrypt_backend", optional = true}
 openmls_rust_crypto = {version = "0.1.0", path = "../openmls_rust_crypto", optional = true}
 rayon = "^1.5.0"
-rstest = {version = "^0.15", optional = true}
+rstest = {version = "^0.16", optional = true}
 rstest_reuse = {version = "0.4", optional = true}
 thiserror = "^1.0"
 
@@ -47,7 +47,7 @@ itertools = "0.10"
 lazy_static = "1.4"
 openmls = {path = ".", features = ["test-utils"]}
 pretty_env_logger = "0.4"
-rstest = "^0.15"
+rstest = "^0.16"
 rstest_reuse = "0.4"
 tempfile = "3"
 
