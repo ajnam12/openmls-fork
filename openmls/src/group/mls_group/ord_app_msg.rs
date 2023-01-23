@@ -19,17 +19,22 @@ impl MlsGroup {
 
         // Create inline add proposals from key packages
         let inline_proposals = vec![Proposal::OrdAppMsg(OrdAppMsgProposal { bytes })];
-        self.send_inline_proposals(backend, inline_proposals)
+        match self.send_inline_proposals(backend, inline_proposals) {
+            Ok((mls_message_out, welcome_option)) => {
+                Ok(mls_message_out)
+            }
+            Err(e) => Err(e),
+        }
     }
 
-    /// Creates a new ordered application message proposal with additional proposals + commit
+    /// Creates a new ordered application message proposal with additional proposals + commit.
     /// Generated Message will have the bytes-ordered message being the first proposal
-    pub fn send_ord_app_w_addl_proposal_msg(
+    pub fn send_ord_app_w_addl_proposals_msg(
         &mut self,
         backend: &impl OpenMlsCryptoProvider,
         bytes: Vec<u8>,
         addl_proposals: Vec<Proposal>,
-    ) -> Result<MlsMessageOut, OrdAppMsgError> {
+    ) -> Result<(MlsMessageOut, Option<Welcome>), OrdAppMsgError> {
         self.is_operational()?;
 
         let mut inline_proposals = vec![Proposal::OrdAppMsg(OrdAppMsgProposal { bytes })];
@@ -38,12 +43,11 @@ impl MlsGroup {
         self.send_inline_proposals(backend, inline_proposals)
     }
 
-
     fn send_inline_proposals(
         &mut self,
         backend: &impl OpenMlsCryptoProvider,
         inline_proposals: Vec<Proposal>,
-    ) -> Result<MlsMessageOut, OrdAppMsgError> {
+    ) -> Result<(MlsMessageOut, Option<Welcome>), OrdAppMsgError> {
         let credential = self.credential()?;
         let credential_bundle: CredentialBundle = backend
             .key_store()
@@ -80,6 +84,6 @@ impl MlsGroup {
         // Since the state of the group might be changed, arm the state flag
         self.flag_state_change();
 
-        Ok(mls_messages)
+        Ok((mls_messages, create_commit_result.welcome_option))
     }
 }
